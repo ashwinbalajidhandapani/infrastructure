@@ -1,0 +1,154 @@
+Description: Spring2022 CSYE6225 Assignment3, This template is used to spin up a Virtual Private cloud in AWS using AWS cloud Formation
+Parameters:
+  CidrBlock:
+    Description: CIDR block
+    Type: String
+    Default: 10.0.0.0/26
+  Subnet1Nameval:
+    Description: Defining the name for the first Subnet
+    Type: String
+    Default: "subnet1"
+  Subnet1AvailablityZone:
+    Description: Availabity Zone definition for Subnet1
+    Type: String
+    Default: "us-east-2a"
+    AllowedValues:
+      - us-east-2a
+      - us-east-2b
+      - us-east-2c
+  Subnet2Nameval:
+    Description: Defining the name for the second Subnet
+    Type: String
+    Default: "subnet2"
+  Subnet2AvailablityZone:
+    Description: Availabity Zone definition for Subnet2
+    Type: String
+    Default: "us-east-2b"
+    AllowedValues:
+      - us-east-2a
+      - us-east-2b
+      - us-east-2c
+  Subnet3Nameval:
+    Description: Defining the name for the third Subnet
+    Type: String
+    Default: "subnet3"
+  Subnet3AvailablityZone:
+    Description: Availabity Zone definition for Subnet3
+    Type: String
+    Default: "us-east-2c"
+    AllowedValues:
+      - us-east-2a
+      - us-east-2b
+      - us-east-2c
+  Subnet1CidrBlock:
+    Description: Cidr block for subnet1
+    Type: String
+  Subnet2CidrBlock:
+    Description: Cidr block for subnet1
+    Type: String
+  Subnet3CidrBlock:
+    Description: Cidr block for subnet1
+    Type: String
+  InternetGatewayName:
+    Description: Defining the name of the internet Gateway
+    Type: String
+    Default: "IG-AWS-CLI"
+  RouteTableName:
+    Description: Defining the name of the Route Table
+    Type: String
+    Default: "RouteTable-AWS-CLI"
+Resources:
+  csyeVPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: !Sub CidrBlock
+      EnableDnsHostnames: 'true'
+      EnableDnsSupport: 'true'
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: !Ref AWS::StackName
+  csye6225Subnet1:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Ref Subnet1AvailablityZone
+      CidrBlock: !Ref Subnet1CidrBlock
+      MapPublicIpOnLaunch: true
+      VpcId:
+        Ref: csyeVPC
+      Tags:
+        - Key: Name
+          Value: !Ref Subnet1Nameval
+  csye6225Subnet2:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Ref Subnet2AvailablityZone
+      CidrBlock: !Ref Subnet2CidrBlock
+      MapPublicIpOnLaunch: true
+      VpcId:
+        Ref: csyeVPC
+      Tags:
+        - Key: Name
+          Value: !Ref Subnet2Nameval
+  csye6225Subnet3:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Ref Subnet3AvailablityZone
+      CidrBlock: !Ref Subnet3CidrBlock
+      MapPublicIpOnLaunch: true
+      VpcId:
+        Ref: csyeVPC
+      Tags:
+        - Key: Name
+          Value: !Ref Subnet3Nameval
+  csye6225InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties: 
+      Tags: 
+        - Key: Name
+          Value: !Ref InternetGatewayName
+  csye6225CarrierRoute:
+    Type: AWS::EC2::Route
+    DependsOn: csye6225AssignIGVPC
+    Properties:
+      RouteTableId:
+        Ref: csye6225RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: csye6225InternetGateway
+  csye6225RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Ref RouteTableName
+      VpcId:
+        Ref: csyeVPC
+  csye6225AssignRouteTableS1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId:
+        Ref: csye6225RouteTable
+      SubnetId: 
+        Ref: csye6225Subnet1
+  csye6225AssignRouteTableS2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: 
+        Ref: csye6225RouteTable
+      SubnetId: 
+        Ref: csye6225Subnet2
+  csye6225AssignRouteTableS3:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: 
+        Ref: csye6225RouteTable
+      SubnetId: 
+        Ref: csye6225Subnet3
+  csye6225AssignIGVPC:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties: 
+      InternetGatewayId:
+        Ref: csye6225InternetGateway
+      VpcId:
+        Ref: csyeVPC

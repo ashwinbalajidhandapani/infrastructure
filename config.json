@@ -1,0 +1,42 @@
+[
+    {
+        "ParameterKey": "CidrBlock",
+        "ParameterValue": "10.0.0.0/26"
+    },
+    {
+        "ParameterKey": "Subnet1AvailablityZone",
+        "ParameterValue": "us-east-2a"
+    },
+    {
+        "ParameterKey": "Subnet2AvailablityZone",
+        "ParameterValue": "us-east-2b"
+    },
+    {
+        "ParameterKey": "Subnet3AvailablityZone",
+        "ParameterValue": "us-east-2c"
+    },
+    {
+        "ParameterKey": "Subnet1Nameval",
+        "ParameterValue": "Subnet-1"
+    },
+    {
+        "ParameterKey": "Subnet2Nameval",
+        "ParameterValue": "Subnet-2"
+    },
+    {
+        "ParameterKey": "Subnet3Nameval",
+        "ParameterValue": "Subnet-3"
+    },
+    {
+        "ParameterKey": "Subnet1CidrBlock",
+        "ParameterValue": "10.0.0.0/28"
+    },
+    {
+        "ParameterKey": "Subnet2CidrBlock",
+        "ParameterValue": "10.0.0.16/28"
+    },
+    {
+        "ParameterKey": "Subnet3CidrBlock",
+        "ParameterValue": "10.0.0.32/28"
+    }
+]
