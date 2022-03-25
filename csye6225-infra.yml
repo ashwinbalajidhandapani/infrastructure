@@ -547,7 +547,7 @@ Resources:
       AdjustmentType: ChangeInCapacity
       AutoScalingGroupName: !Ref AutoscalingGroup
       Cooldown: 60
-      ScalingAdjustment: -1
+      ScalingAdjustment: 1
 
   ScaleInPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
@@ -555,7 +555,7 @@ Resources:
       AdjustmentType: ChangeInCapacity
       AutoScalingGroupName: !Ref AutoscalingGroup
       Cooldown: 60
-      ScalingAdjustment: 1
+      ScalingAdjustment: -1
 
   TargetGroup:
     DependsOn: csye6225LoadBalancer
