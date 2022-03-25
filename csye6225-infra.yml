@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: CSYE 6225 VPC SPIN Script Files
+Description: CSYE 6225 Spring 2022 Cloudformation template 
 Parameters:
   VpcCidrBlock:
     Description: CIDR block
@@ -60,7 +60,7 @@ Parameters:
     Description: Subnet Private Region 3 Cidr value
     Type: String
   AMI:
-    Description: "AMI for Instance"
+    Description: "AMI for the webservice Instance"
     Type: String
   KeyName:
     Description: "Key Name for Instance"
@@ -70,25 +70,25 @@ Parameters:
     Type: String
     Description: Profile to run 
   DBInstanceIdentifier:
-    Description: "Instance identifier of db"
+    Description: "RDS - Instance identifier of db"
     Type: String
   DbUserName:
-    Description: "User name of db"
+    Description: "DB username"
     Type: String
   DbPassword:
-    Description: "Password of db"
+    Description: "DB Password"
     Type: String
   DbPort:
-    Description: "Port of db"
+    Description: "DB port"
     Type: String
   DbName:
-    Description: "Name of db"
+    Description: "DB Name"
     Type: String
   S3BucketName:
-    Description: "Name of S3 bucket"
+    Description: "Name of the S3 bucket"
     Type: String
   S3BucketRegion:
-    Description: "Region of S3 bucket"
+    Description: "S3 bucket Region"
     Type: String
   AwsAccessKey:
     Description: "AWS access Key"
@@ -480,9 +480,9 @@ Resources:
   AutoscalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      MinSize: '3'
+      MinSize: '1'
       MaxSize: '5'
-      DesiredCapacity: '3'
+      DesiredCapacity: '1'
       LaunchConfigurationName: !Ref AutoScalingLaunchConfig
       VPCZoneIdentifier:
       - !Ref mySubnet1
@@ -513,8 +513,24 @@ Resources:
     Properties:
       EvaluationPeriods: '1'
       Statistic: Average
-      Threshold: '13'
-      AlarmDescription: Scale up if CPU > 13%
+      Threshold: '7'
+      AlarmDescription: Scaling up -- CPU usage > 7%
+      Period: '60'
+      AlarmActions:
+      - !Ref ScaleOutPolicy
+      Namespace: AWS/EC2
+      Dimensions:
+      - Name: AutoScalingGroupName
+        Value: !Ref AutoscalingGroup
+      ComparisonOperator: GreaterThanThreshold
+      MetricName: CPUUtilization
+  CPUAlarmLow:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      EvaluationPeriods: '1'
+      Statistic: Average
+      Threshold: '4'
+      AlarmDescription: Scale down if CPU < 4%
       Period: '60'
       AlarmActions:
       - !Ref ScaleOutPolicy
@@ -531,7 +547,7 @@ Resources:
       AdjustmentType: ChangeInCapacity
       AutoScalingGroupName: !Ref AutoscalingGroup
       Cooldown: 60
-      ScalingAdjustment: 1
+      ScalingAdjustment: -1
 
   ScaleInPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
@@ -539,7 +555,7 @@ Resources:
       AdjustmentType: ChangeInCapacity
       AutoScalingGroupName: !Ref AutoscalingGroup
       Cooldown: 60
-      ScalingAdjustment: -1
+      ScalingAdjustment: 1
 
   TargetGroup:
     DependsOn: csye6225LoadBalancer
