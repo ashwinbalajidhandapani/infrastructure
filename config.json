@@ -114,10 +114,10 @@
     },
     {
         "ParameterKey": "AwsAccessKey",
-        "ParameterValue": "AKIASVYDINRHEXSVB6WM"
+        "ParameterValue": "Enter you own"
     },
     {
         "ParameterKey": "AwsSecretKey",
-        "ParameterValue": "MQZRVnRjEYzXKSftjhoIGjHnEOO8fp8Cdbb+LWRk"
+        "ParameterValue": "Enter your own"
     }
 ]
